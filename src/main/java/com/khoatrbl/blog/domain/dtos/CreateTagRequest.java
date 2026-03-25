@@ -1,6 +1,7 @@
 package com.khoatrbl.blog.domain.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,8 +16,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class CreateTagRequest {
-    @NotBlank(message = "Tag name is required")
-    @Size(min = 2, max = 50, message = "Tag name must be between 2 and 50 characters")
-    @Pattern(regexp = "^[\\w\\s-]+$", message = "Tag name can only contains letters, numbers, spaces and hyphens")
-    private Set<String> tagNames;
+    @NotEmpty(message = "At least one tag name is required")
+    @Size(max = 10, message = "Maximum {max} tags allowed")
+    private Set<
+            @Size(min = 2, max = 30, message = "Tag name must be between 2 and 30 characters")
+            @Pattern(regexp = "^[\\w\\s-]+$", message = "Tag can only contains letters, numbers, spaces and hyphens")
+                String> tagNames;
 }
