@@ -3,14 +3,12 @@ package com.khoatrbl.blog.services.impl;
 import com.khoatrbl.blog.domain.entities.Tag;
 import com.khoatrbl.blog.repositories.TagRepository;
 import com.khoatrbl.blog.services.TagService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,5 +46,32 @@ public class TagServiceImpl implements TagService {
         savedTags.addAll(existingTags);
 
         return savedTags;
+    }
+
+    @Override
+    public void deleteTag(UUID tagId) {
+        tagRepository.findById(tagId).ifPresent(tag -> {
+            if (!tag.getPosts().isEmpty()) {
+                throw new IllegalStateException("Cannot delete tag with posts.");
+            }
+            tagRepository.deleteById(tagId);
+        });
+    }
+
+    @Override
+    public Tag getTagById(UUID tagId) {
+        return tagRepository.findById(tagId)
+                .orElseThrow(() -> new EntityNotFoundException("Tag not found with id: " + tagId));
+    }
+
+    @Override
+    public List<Tag> getTagsByIds(Set<UUID> tagIds) {
+        List<Tag> foundTags = tagRepository.findAllById(tagIds);
+
+        if (foundTags.size() != tagIds.size()) {
+            throw new EntityNotFoundException("Not all specified tag ids exist");
+        }
+
+        return foundTags;
     }
 }

@@ -17,15 +17,13 @@ public interface TagMapper {
     TagDto toTagDto(Tag tag);
 
     @Named("calculatePostCount")
-    default Long calculatePostCount(Set<Post> posts) {
+    default long calculatePostCount(Set<Post> posts) {
         if (posts == null) {
             return 0L;
         }
 
         return posts.stream()
-                .filter(
-                        post -> PostStatus.PUBLISHED.equals(post.getStatus())
-                )
+                .filter(post -> PostStatus.PUBLISHED.equals(post.getStatus()))
                 .count();
     }
 

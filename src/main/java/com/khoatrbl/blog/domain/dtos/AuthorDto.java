@@ -11,8 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TagDto {
-    private UUID tagId;
-    private String tagName;
-    private long postCount;
+public class AuthorDto {
+    private UUID id;
+    private String name;
 }
