@@ -61,6 +61,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Post getPost(UUID postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post with id " + postId + " does not exist."));
+    }
+
+    @Override
     public List<Post> getDraftPosts(User user) {
         return postRepository.findAllByAuthorAndStatus(user, PostStatus.DRAFT);
     }
@@ -117,6 +123,18 @@ public class PostServiceImpl implements PostService {
 
         return postRepository.save(existingPost);
 
+    }
+
+    @Override
+    public void deletePost(UUID postId) {
+        Post post = getPost(postId);
+
+        postRepository.delete(post);
+    }
+
+    @Override
+    public void deleteAllPost() {
+        postRepository.deleteAll();
     }
 
     private int calculateReadingTime(String content) {
